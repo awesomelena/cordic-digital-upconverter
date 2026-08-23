@@ -4,7 +4,7 @@ Design and FPGA implementation of a digital up-converter (DUC) for a 10-bit DAC
 transmitter: a 16× multistage interpolator and a **pipelined CORDIC complex mixer**
 written in VHDL, verified bit-exactly against a Python golden model.
 
-Course project for *Hardware-Software Signal Processing* (13E044HSOS),
+Course project for *Hardware-Software Signal Processing*,
 School of Electrical Engineering, University of Belgrade.
 
 ---
@@ -37,7 +37,7 @@ is implemented in VHDL and taken through synthesis and implementation (phase 2).
 | Throughput | 1 sample per clock cycle |
 | SFDR | **68.9 dB** (exceeds the 61.96 dB quantisation limit for 10 bits) |
 | Output error | 1.54 LSB peak, 0.75 LSB RMS at full scale (512) |
-| Verification | bit-exact against a Python golden model, 16 384 samples |
+| Verification | bit-exact against a Python reference model, 16 384 samples |
 
 **Implementation on PYNQ-Z2 (Xilinx XC7Z020-1):**
 
@@ -73,13 +73,12 @@ surrounding logic.
 │   │   ├── cordic_core.vhd     Ten stages in cascade
 │   │   └── cordic_mixer.vhd    Top level: NCO, pre-rotation, core, output stage
 │   ├── sim/
-│   │   ├── tb_demo.vhd         Nine hand-picked vectors, self-checking
+│   │   ├── tb_cordic.vhd         Nine hand-picked vectors, self-checking
 │   │   ├── tb_selfcheck.vhd    16 384 samples against the golden model
 │   │   ├── tb_mixer.vhd        Produces output samples for spectrum plots
 │   │   └── tb_tone.vhd         Constant input, for SFDR measurement
-│   ├── constraints/
-│   │   ├── cordic_mixer.xdc    Timing constraints
-│   │   └── build.tcl           Batch synthesis and implementation
+│   ├── constraints/  
+│   │   └── cordic_mixer.xdc    Timing constraints
 │   ├── python/
 │   │   ├── golden.py           Bit-exact reference model
 │   │   ├── verify.py           Compares RTL output against the model
@@ -122,17 +121,6 @@ Expected output:
 
 Rotating (511, 0) by 45° gives (362, 361); the exact values are
 511·cos 45° = 511·sin 45° = 361.33, so the error stays below one LSB.
-
-### Synthesise for PYNQ-Z2
-
-```bash
-cd phase2-hardware
-vivado -mode batch -source constraints/build.tcl
-```
-
-Reports are written to `vivado_out/`. To find the maximum frequency, reduce
-`create_clock -period` in `constraints/cordic_mixer.xdc` and re-run until the
-worst negative slack turns negative.
 
 ### Reproduce the analysis and figures
 
