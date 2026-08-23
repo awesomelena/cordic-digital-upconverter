@@ -73,7 +73,7 @@ surrounding logic.
 │   │   ├── cordic_core.vhd     Ten stages in cascade
 │   │   └── cordic_mixer.vhd    Top level: NCO, pre-rotation, core, output stage
 │   ├── sim/
-│   │   ├── tb_cordic.vhd         Nine hand-picked vectors, self-checking
+│   │   ├── tb_cordic.vhd       Nine hand-picked vectors, self-checking
 │   │   ├── tb_selfcheck.vhd    16 384 samples against the golden model
 │   │   ├── tb_mixer.vhd        Produces output samples for spectrum plots
 │   │   └── tb_tone.vhd         Constant input, for SFDR measurement
